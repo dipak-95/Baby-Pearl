@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './components/Dashboard';
 import PhotoList from './components/PhotoList';
 import UploadPhoto from './components/PhotoForm'; // Renamed import conceptually
+import Login from './components/Login';
 import './App.css';
 
 const Sidebar = ({ isOpen, toggle }) => (
@@ -52,8 +53,31 @@ const Sidebar = ({ isOpen, toggle }) => (
   </>
 );
 
+import Login from './components/Login';
+
+// ... (existing imports remain same)
+
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('admin_token') ? true : false;
+  });
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token');
+    setIsAuthenticated(false);
+    toast.info('Logged out successfully');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Login onLogin={() => setIsAuthenticated(true)} />
+        <ToastContainer position="bottom-right" theme="light" />
+      </>
+    );
+  }
 
   return (
     <Router>
@@ -61,11 +85,28 @@ function App() {
         <Sidebar isOpen={isSidebarOpen} toggle={setSidebarOpen} />
 
         <main className="main-content">
-          {/* Mobile Header (Only visible on small screens due to CSS) */}
-          <div className="mobile-header" style={{ display: 'none' }}>
-            <div className="brand" style={{ marginBottom: 0 }}>BabyPrompt</div>
-            <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-              <Menu size={24} color="#374151" />
+          {/* Mobile Header */}
+          <div className="mobile-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                <Menu size={24} color="#374151" />
+              </button>
+              <div className="brand" style={{ marginBottom: 0 }}>BabyPrompt</div>
+            </div>
+            <button
+              onClick={handleLogout}
+              style={{ padding: '8px 16px', borderRadius: '8px', background: '#fee2e2', color: '#ef4444', border: 'none', fontWeight: '600', cursor: 'pointer' }}
+            >
+              Logout
+            </button>
+          </div>
+
+          <div className="desktop-header" style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 20px 20px 0' }}>
+            <button
+              onClick={handleLogout}
+              style={{ padding: '8px 16px', borderRadius: '8px', background: '#fee2e2', color: '#ef4444', border: 'none', fontWeight: '600', cursor: 'pointer' }}
+            >
+              Logout
             </button>
           </div>
 

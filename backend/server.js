@@ -6,9 +6,21 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 8004;
 
-// Middleware
+// Middleware - MOVED TO TOP (Crucial for req.body)
 app.use(cors());
 app.use(express.json());
+
+// Admin Login Route
+app.post('/api/admin/login', (req, res) => {
+    const { email, password } = req.body;
+
+    // Hardcoded credentials as requested
+    if (email === 'admin@pearl.com' && password === 'admin123') {
+        res.json({ success: true, token: 'pearl-admin-token-secure' });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+});
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/baby_photo_prompt')
