@@ -53,9 +53,6 @@ const Sidebar = ({ isOpen, toggle }) => (
   </>
 );
 
-import Login from './components/Login';
-
-// ... (existing imports remain same)
 
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
