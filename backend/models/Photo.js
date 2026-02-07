@@ -8,7 +8,7 @@ const PhotoSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['month', 'festival'],
+        enum: ['month', 'festival', 'professional'],
         required: true
     },
     category: {

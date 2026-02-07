@@ -5,6 +5,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../firebase';
 import { toast } from 'react-toastify';
 import { UploadCloud, Save, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { PHOTOS_API } from '../config/api';
 
 const UploadPhoto = () => {
     const { id } = useParams();
@@ -36,7 +37,7 @@ const UploadPhoto = () => {
 
     const fetchPhoto = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/photos/${id}`);
+            const res = await axios.get(`${PHOTOS_API}/${id}`);
             const photoData = res.data;
             if (photoData.keywords && Array.isArray(photoData.keywords)) {
                 photoData.keywords = photoData.keywords.join(', ');
@@ -47,7 +48,16 @@ const UploadPhoto = () => {
         }
     };
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'type') {
+            // Reset category when Event Type changes to avoid mixing
+            setFormData({ ...formData, type: value, category: '' });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
     const handleFileChange = (e) => {
         if (e.target.files[0]) setImageFile(e.target.files[0]);
     };
@@ -74,10 +84,10 @@ const UploadPhoto = () => {
             const payload = { ...formData, imageUrl: url };
 
             if (isEdit) {
-                await axios.put(`http://localhost:5000/api/photos/${id}`, payload);
+                await axios.put(`${PHOTOS_API}/${id}`, payload);
                 toast.success('Photo updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/photos', payload);
+                await axios.post(PHOTOS_API, payload);
                 toast.success('Photo uploaded successfully');
             }
             navigate('/photos');
@@ -100,21 +110,7 @@ const UploadPhoto = () => {
             <form onSubmit={handleSubmit}>
                 <div style={{ maxWidth: 800, margin: '0 auto', background: 'white', padding: 40, borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
 
-                    {/* 1. Title */}
-                    <div style={{ marginBottom: 25 }}>
-                        <label>Title / Photo Name</label>
-                        <input
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            placeholder="e.g. 6 Month Birthday, Diwali Celebration"
-                            required
-                            style={{ fontSize: 16 }}
-                        />
-                        <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 5 }}>This will be the display name for this photo</div>
-                    </div>
-
-                    {/* 2. Gender & Type */}
+                    {/* 1. Gender & Type */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 25 }}>
                         <div>
                             <label>Gender Category</label>
@@ -133,7 +129,7 @@ const UploadPhoto = () => {
                         </div>
                     </div>
 
-                    {/* 3. Category Dropdown (Dynamic) */}
+                    {/* 2. Category Dropdown (Dynamic) */}
                     <div style={{ marginBottom: 25 }}>
                         <label>
                             {formData.type === 'month' ? 'Select Month' :
@@ -187,13 +183,16 @@ const UploadPhoto = () => {
                                         <option value="Navratri">Navratri</option>
                                         <option value="Ganesh Chaturthi">Ganesh Chaturthi</option>
                                         <option value="Christmas">Christmas</option>
+                                        <option value="Raksha Bandhan">Raksha Bandhan</option>
+                                        <option value="Independence Day">Independence Day</option>
+                                        <option value="Republic Day">Republic Day</option>
                                     </>
                                 )}
                             </select>
                         )}
                     </div>
 
-                    {/* 4. AI Prompt */}
+                    {/* 3. AI Prompt */}
                     <div style={{ marginBottom: 25 }}>
                         <label>AI Prompt Description</label>
                         <textarea
@@ -208,7 +207,7 @@ const UploadPhoto = () => {
                         <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 5 }}>This prompt will be shown to users</div>
                     </div>
 
-                    {/* 5. Keywords */}
+                    {/* 4. Keywords */}
                     <div style={{ marginBottom: 25 }}>
                         <label>Keywords (for search)</label>
                         <input
@@ -221,7 +220,7 @@ const UploadPhoto = () => {
                         <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 5 }}>Separate multiple keywords with commas - helps users find this photo</div>
                     </div>
 
-                    {/* 6. Photo Upload */}
+                    {/* 5. Photo Upload */}
                     <div style={{ marginBottom: 30 }}>
                         <label style={{ marginBottom: 15, display: 'block', fontWeight: 600 }}>Upload Photo</label>
 
@@ -269,7 +268,7 @@ const UploadPhoto = () => {
                         </label>
                     </div>
 
-                    {/* 7. Submit Buttons */}
+                    {/* 6. Submit Buttons */}
                     <div style={{ display: 'flex', gap: 15, justifyContent: 'flex-end', paddingTop: 20, borderTop: '1px solid #e5e7eb' }}>
                         <button
                             type="button"

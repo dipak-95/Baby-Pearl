@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Edit2, Trash2, Search, Filter, Plus } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { PHOTOS_API } from '../config/api';
 
 const PhotoList = ({ type }) => {
     const [photos, setPhotos] = useState([]);
@@ -22,7 +23,7 @@ const PhotoList = ({ type }) => {
             if (genderFilter) params.gender = genderFilter;
             if (filterType) params.type = filterType;
 
-            const res = await axios.get('http://localhost:5000/api/photos', { params });
+            const res = await axios.get(PHOTOS_API, { params });
             setPhotos(res.data);
         } catch (err) {
             toast.error('Failed to fetch photos');
@@ -32,7 +33,7 @@ const PhotoList = ({ type }) => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this photo permanently?')) return;
         try {
-            await axios.delete(`http://localhost:5000/api/photos/${id}`);
+            await axios.delete(`${PHOTOS_API}/${id}`);
             toast.success('Photo removed');
             fetchPhotos();
         } catch (err) {
