@@ -13,6 +13,7 @@ app.use(express.json());
 // Admin Login Route
 app.post('/api/admin/login', (req, res) => {
     const { email, password } = req.body;
+    console.log(`Login attempt for: ${email}`);
 
     // Hardcoded credentials as requested
     if (email === 'admin@pearl.com' && password === 'admin123') {
