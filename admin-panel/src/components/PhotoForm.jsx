@@ -26,6 +26,18 @@ const UploadPhoto = () => {
     const [imageFile, setImageFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState('');
 
+    const monthOptions = [
+        "1 Month", "2 Month", "3 Month", "4 Month", "5 Month", "6 Month",
+        "Half Birthday", "7 Month", "8 Month", "9 Month", "10 Month",
+        "11 Month", "12 Month", "1st Birthday"
+    ];
+
+    const festivalOptions = [
+        "Makar Sankranti", "Maha Shivratri", "Holi", "Janmashtami", "Diwali",
+        "New Year", "Navratri", "Ganesh Chaturthi", "Christmas", "Raksha Bandhan",
+        "Independence Day", "Republic Day"
+    ];
+
     useEffect(() => {
         if (isEdit) fetchPhoto();
     }, [id]);
@@ -51,7 +63,6 @@ const UploadPhoto = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === 'type') {
-            // Reset category when Event Type changes to avoid mixing
             setFormData({ ...formData, type: value, category: '' });
         } else {
             setFormData({ ...formData, [name]: value });
@@ -155,39 +166,10 @@ const UploadPhoto = () => {
                                 style={{ fontSize: 16 }}
                             >
                                 <option value="">-- Select {formData.type === 'month' ? 'Month' : 'Festival'} --</option>
-                                {formData.type === 'month' ? (
-                                    <>
-                                        <option value="1 Month">1 Month</option>
-                                        <option value="2 Month">2 Month</option>
-                                        <option value="3 Month">3 Month</option>
-                                        <option value="4 Month">4 Month</option>
-                                        <option value="5 Month">5 Month</option>
-                                        <option value="6 Month">6 Month</option>
-                                        <option value="Half Birthday">Half Birthday</option>
-                                        <option value="7 Month">7 Month</option>
-                                        <option value="8 Month">8 Month</option>
-                                        <option value="9 Month">9 Month</option>
-                                        <option value="10 Month">10 Month</option>
-                                        <option value="11 Month">11 Month</option>
-                                        <option value="12 Month">12 Month</option>
-                                        <option value="1st Birthday">1st Birthday</option>
-                                    </>
-                                ) : (
-                                    <>
-                                        <option value="Makar Sankranti">Makar Sankranti</option>
-                                        <option value="Maha Shivratri">Maha Shivratri</option>
-                                        <option value="Holi">Holi</option>
-                                        <option value="Janmashtami">Janmashtami</option>
-                                        <option value="Diwali">Diwali</option>
-                                        <option value="New Year">New Year</option>
-                                        <option value="Navratri">Navratri</option>
-                                        <option value="Ganesh Chaturthi">Ganesh Chaturthi</option>
-                                        <option value="Christmas">Christmas</option>
-                                        <option value="Raksha Bandhan">Raksha Bandhan</option>
-                                        <option value="Independence Day">Independence Day</option>
-                                        <option value="Republic Day">Republic Day</option>
-                                    </>
-                                )}
+                                {formData.type === 'month'
+                                    ? monthOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)
+                                    : festivalOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)
+                                }
                             </select>
                         )}
                     </div>
